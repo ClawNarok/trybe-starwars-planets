@@ -10,11 +10,16 @@ const mapProperties = (item) => TITTLES.map((attrib, i) => (
   <td key={ i }>{ item[normalizeName(attrib)] }</td>));
 
 function Table() {
-  const { getPlanets, data } = useContext(PlanetsContext);
+  const { getData, data, filterByName: { name },
+    setPlanets, planets } = useContext(PlanetsContext);
+  useEffect(() => {
+    getData();
+  }, []);
 
   useEffect(() => {
-    getPlanets();
-  }, []);
+    setPlanets(name === '' ? data : data.filter((item) => (
+      item.name.toLowerCase().includes(name))));
+  }, [name]);
 
   return (
     <table>
@@ -24,7 +29,7 @@ function Table() {
         </tr>
       </thead>
       <tbody>
-        { data.map((planet, i) => <tr key={ i }>{mapProperties(planet)}</tr>) }
+        { planets.map((planet, i) => <tr key={ i }>{mapProperties(planet)}</tr>) }
       </tbody>
     </table>
   );

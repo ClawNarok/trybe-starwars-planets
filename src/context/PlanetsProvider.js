@@ -3,20 +3,27 @@ import PlanetsContext from './PlanetsContext';
 import planetsAPI from '../api/planetsAPI';
 
 function PlanetsProvider({ children }) {
-  const [data, setPlanets] = useState([]);
+  const [data, setData] = useState([]);
+  const [filterByName, setFilterByName] = useState({ name: '' });
+  const [planets, setPlanets] = useState([]);
 
-  async function getPlanets() {
-    const planets = await planetsAPI();
-    setPlanets(planets);
+  async function getData() {
+    const result = await planetsAPI();
+    setData(result);
+    setPlanets(result);
   }
 
-  const props = {
+  const contextValue = {
     data,
-    getPlanets,
+    getData,
+    filterByName,
+    setFilterByName,
+    planets,
+    setPlanets,
   };
 
   return (
-    <PlanetsContext.Provider value={ props }>
+    <PlanetsContext.Provider value={ contextValue }>
       { children }
     </PlanetsContext.Provider>
   );
