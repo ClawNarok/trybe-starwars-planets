@@ -1,24 +1,46 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PlanetsContext from '../context/PlanetsContext';
 import Table from '../components/Table';
 
+const filterField = ['population',
+  'orbital_period',
+  'diameter',
+  'rotation_period',
+  'surface_water'];
+
 function Planets() {
-  const { setFilterByNumericValues,
+  const { setFilterByNumericValues, filterByNumericValues,
     filterByName: { name }, setFilterByName,
     value, setValue,
     column, setColumn,
-    comparison, setComparison } = useContext(PlanetsContext);
+    comparison, setComparison,
+    filterFields, setFilterFields } = useContext(PlanetsContext);
 
-  const resetFilter = () => {
-    setColumn('population');
+  useEffect(() => (
+    setFilterFields(filterField)
+  ), []);
+
+  const resetFilter = (fields) => {
+    setColumn(fields[0]);
     setComparison('maior que');
     setValue(0);
   };
 
+  useEffect(() => {
+    const newFilters = filterField.filter((field) => (
+      filterByNumericValues.every((item) => (
+        field !== item.column
+      ))
+    ));
+    setFilterFields(newFilters);
+    resetFilter(newFilters);
+  }, [filterByNumericValues]);
+
   const handleFilter = () => {
     const newFilter = { column, comparison, value };
-    setFilterByNumericValues((prevState) => [...prevState, newFilter]);
-    resetFilter();
+    const exist = filterByNumericValues
+      .some((item) => JSON.stringify(item) === JSON.stringify(newFilter));
+    if (!exist) setFilterByNumericValues((prevState) => [...prevState, newFilter]);
   };
 
   return (
@@ -36,11 +58,8 @@ function Planets() {
           data-testid="column-filter"
           onChange={ (e) => setColumn(e.target.value) }
         >
-          <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          { filterFields.map((field) => (
+            <option key={ field } value={ field }>{ field }</option>)) }
         </select>
         <select
           value={ comparison }

@@ -11,6 +11,7 @@ function PlanetsProvider({ children }) {
   const [filterByName, setFilterByName] = useState({ name: '' });
   const [planets, setPlanets] = useState([]);
   const [filterByNumericValues, setFilterByNumericValues] = useState([]);
+  const [filterFields, setFilterFields] = useState([]);
 
   async function getData() {
     const result = await planetsAPI();
@@ -33,6 +34,8 @@ function PlanetsProvider({ children }) {
     setValue,
     comparison,
     setComparison,
+    filterFields,
+    setFilterFields,
   };
 
   return (
