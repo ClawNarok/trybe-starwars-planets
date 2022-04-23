@@ -12,11 +12,21 @@ function PlanetsProvider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [filterByNumericValues, setFilterByNumericValues] = useState([]);
   const [filterFields, setFilterFields] = useState([]);
+  const [order, setOrder] = useState({ column: 'population', sort: '' });
+  const [columnOrder, setColumnOrder] = useState('population');
+  const [sortOrder, setSortOrder] = useState('');
+
+  const alphabetic = (a, b) => {
+    const MENOS_UM = -1;
+    if (a.name > b.name) return 1;
+    if (a.name < b.name) return MENOS_UM;
+    return 0;
+  };
 
   async function getData() {
     const result = await planetsAPI();
-    setData(result);
-    setPlanets(result);
+    setData(result.sort((a, b) => alphabetic(a, b)));
+    setPlanets(result.sort((a, b) => alphabetic(a, b)));
   }
 
   const contextValue = {
@@ -36,6 +46,12 @@ function PlanetsProvider({ children }) {
     setComparison,
     filterFields,
     setFilterFields,
+    order,
+    setOrder,
+    columnOrder,
+    setColumnOrder,
+    sortOrder,
+    setSortOrder,
   };
 
   return (

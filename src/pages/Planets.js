@@ -15,7 +15,11 @@ function Planets() {
     value, setValue,
     column, setColumn,
     comparison, setComparison,
-    filterFields, setFilterFields } = useContext(PlanetsContext);
+    filterFields, setFilterFields,
+    setOrder,
+    columnOrder, setColumnOrder,
+    sortOrder, setSortOrder,
+  } = useContext(PlanetsContext);
 
   useEffect(() => (
     setFilterFields(filterField)
@@ -25,6 +29,11 @@ function Planets() {
     setColumn(fields[0]);
     setComparison('maior que');
     setValue(0);
+  };
+
+  const handleButtonOrder = () => {
+    if (sortOrder === '' || columnOrder === '') return;
+    setOrder({ column: columnOrder, sort: sortOrder });
   };
 
   useEffect(() => {
@@ -83,6 +92,44 @@ function Planets() {
           onClick={ handleFilter }
         >
           Filtrar
+        </button>
+        <select
+          value={ columnOrder }
+          data-testid="column-sort"
+          name="column"
+          onChange={ (e) => setColumnOrder(e.target.value) }
+        >
+          { filterFields.map((field) => (
+            <option key={ field } value={ field }>{ field }</option>)) }
+        </select>
+        <label htmlFor="ASC">
+          <input
+            type="radio"
+            id="ASC"
+            name="sort"
+            value="ASC"
+            data-testid="column-sort-input-asc"
+            onClick={ (e) => setSortOrder(e.target.value) }
+          />
+          ASC
+        </label>
+        <label htmlFor="DESC">
+          <input
+            type="radio"
+            id="DESC"
+            name="sort"
+            value="DESC"
+            data-testid="column-sort-input-desc"
+            onClick={ (e) => setSortOrder(e.target.value) }
+          />
+          DSC
+        </label>
+        <button
+          type="button"
+          data-testid="column-sort-button"
+          onClick={ handleButtonOrder }
+        >
+          Ordenar
         </button>
       </div>
       <Filters />
