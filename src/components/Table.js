@@ -16,6 +16,18 @@ const mapProperties = (item) => TITTLES.map((attrib, i) => (
   attrib === 'Name' ? (
     (<td key={ i } data-testid="planet-name">{ item[normalizeField(attrib)] }</td>)
   ) : (<td key={ i }>{ item[normalizeField(attrib)] }</td>)));
+// const ascend = (arr) => {
+//   const unk = arr.filter((item) => item[order.column] === 'unknown');
+//   const ord = arr.filter((item) => item[order.column] !== 'unknown')
+//     .sort((a, b) => a[order.column] - b[order.column]);
+//   return [...ord, ...unk];
+// };
+// const descend = (arr) => {
+//   const unk = arr.filter((item) => item[order.column] === 'unknown');
+//   const ord = arr.filter((item) => item[order.column] !== 'unknown')
+//     .sort((a, b) => b[order.column] - a[order.column]);
+//   return [...ord, ...unk];
+// };
 
 function Table() {
   const { getData, data,
@@ -25,13 +37,23 @@ function Table() {
     order,
   } = useContext(PlanetsContext);
 
+  const ascend = (arr) => {
+    const unk = arr.filter((item) => item[order.column] === 'unknown');
+    const ord = arr.filter((item) => item[order.column] !== 'unknown')
+      .sort((a, b) => a[order.column] - b[order.column]);
+    return [...ord, ...unk];
+  };
+  const descend = (arr) => {
+    const unk = arr.filter((item) => item[order.column] === 'unknown');
+    const ord = arr.filter((item) => item[order.column] !== 'unknown')
+      .sort((a, b) => b[order.column] - a[order.column]);
+    return [...ord, ...unk];
+  };
+
   const sortPlanets = (arr) => {
     const { column, sort } = order;
     if (column === '' || sort === '') return arr;
-    return sort === 'ASC' ? (
-      arr.sort((a, b) => Number(a[column]) - Number(b[column]))
-    ) : (
-      arr.sort((a, b) => Number(b[column]) - Number(a[column])));
+    return sort === 'ASC' ? ascend(arr) : descend(arr);
   };
 
   useEffect(() => {
